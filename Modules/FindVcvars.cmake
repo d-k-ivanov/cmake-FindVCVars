@@ -35,7 +35,7 @@ This will define the following variables:
 
   Path to ``vcvars32.bat``, ``vcvarsamd64.bat`` or ``vcvars64.bat``.
 
-.. variable:: Vcvars_WRAPPER_BATCH_FILE
+.. variable:: Vcvars_LAUNCHER
 
   Path to a generated wrapper script allowing to execute program after
   setting environment defined by `Vcvars_BATCH_FILE`.
@@ -46,7 +46,7 @@ This will define the following variables:
     set(cmd_wrapper)
     if(MSVC)
       find_package(Vcvars REQUIRED)
-      set(cmd_wrapper ${Vcvars_WRAPPER_BATCH_FILE})
+      set(cmd_wrapper ${Vcvars_LAUNCHER})
     endif()
 
     ExternalProject_Add(AwesomeProject
@@ -98,14 +98,16 @@ This module also defines the following functions
 
 #]=======================================================================]
 
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.5)
 
 # TODO Support lookup of "Microsoft Visual C++ Compiler for Python 2.7 (x86, amd64)"
 
 # Global variables used only in this script (unset at the end)
 set(_Vcvars_MSVC_ARCH_REGEX "^(32|64)$")
 set(_Vcvars_MSVC_VERSION_REGEX "^[0-9][0-9][0-9][0-9]$")
-set(_Vcvars_SUPPORTED_MSVC_VERSIONS 1914 1913 1912 1911 1910 1900 1800 1700 1600 1500 1400)
+set(_Vcvars_SUPPORTED_MSVC_VERSIONS 1926 1925 1924 1923 1922 1921 1920
+                                    1916 1915 1914 1913 1912 1911 1910 1900 
+                                    1800 1700 1600 1500 1400)
 
 function(_vcvars_message)
   if(NOT Vcvars_FIND_QUIETLY)
@@ -118,7 +120,25 @@ function(Vcvars_ConvertMsvcVersionToVsVersion msvc_version output_var)
     message(FATAL_ERROR "msvc_version is expected to match `${_Vcvars_MSVC_VERSION_REGEX}`")
   endif()
   # See https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#Internal_version_numbering
-  if(msvc_version EQUAL 1914)     # VS 2017
+  if(msvc_version EQUAL 1926)     # VS 2019
+    set(vs_version "16.6")
+  elseif(msvc_version EQUAL 1925) # VS 2019
+    set(vs_version "16.5")
+  elseif(msvc_version EQUAL 1924) # VS 2019
+    set(vs_version "16.4")
+  elseif(msvc_version EQUAL 1923) # VS 2019
+    set(vs_version "16.3")
+  elseif(msvc_version EQUAL 1922) # VS 2019
+    set(vs_version "16.2")
+  elseif(msvc_version EQUAL 1921) # VS 2019
+    set(vs_version "16.1")
+  elseif(msvc_version EQUAL 1920) # VS 2019
+    set(vs_version "16.0")
+  elseif(msvc_version EQUAL 1916) # VS 2017
+    set(vs_version "15.9")
+  elseif(msvc_version EQUAL 1915) # VS 2017
+    set(vs_version "15.8")
+  elseif(msvc_version EQUAL 1914) # VS 2017
     set(vs_version "15.7")
   elseif(msvc_version EQUAL 1913) # VS 2017
     set(vs_version "15.6")
@@ -241,8 +261,8 @@ endif()
 if(NOT DEFINED Vcvars_BATCH_FILE)
   set(Vcvars_BATCH_FILE "Vcvars_BATCH_FILE-NOTFOUND")
 endif()
-if(NOT DEFINED Vcvars_WRAPPER_BATCH_FILE)
-  set(Vcvars_WRAPPER_BATCH_FILE "Vcvars_WRAPPER_BATCH_FILE-NOTFOUND")
+if(NOT DEFINED Vcvars_LAUNCHER)
+  set(Vcvars_LAUNCHER "Vcvars_LAUNCHER-NOTFOUND")
 endif()
 
 # check Vcvars_MSVC_ARCH is propertly set
@@ -298,7 +318,7 @@ else()
 endif()
 
 # configure wrapper script
-set(Vcvars_WRAPPER_BATCH_FILE)
+set(Vcvars_LAUNCHER)
 if(Vcvars_BATCH_FILE)
 
   set(_in "${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/Vcvars_wrapper.bat.in")
@@ -309,7 +329,7 @@ if(Vcvars_BATCH_FILE)
 ")
   configure_file(${_in} ${_out} @ONLY)
 
-  set(Vcvars_WRAPPER_BATCH_FILE ${_out})
+  set(Vcvars_LAUNCHER ${_out})
   unset(_in)
   unset(_out)
 endif()
@@ -323,9 +343,9 @@ find_package_handle_standard_args(Vcvars
   FOUND_VAR Vcvars_FOUND
   REQUIRED_VARS
     Vcvars_BATCH_FILE
+    Vcvars_LAUNCHER
     Vcvars_MSVC_VERSION
     Vcvars_MSVC_ARCH
-    Vcvars_WRAPPER_BATCH_FILE
   FAIL_MESSAGE
     "Failed to find vcvars scripts for Vcvars_MSVC_VERSION [${Vcvars_MSVC_VERSION}] and Vcvars_MSVC_ARCH [${Vcvars_MSVC_ARCH}]"
   )

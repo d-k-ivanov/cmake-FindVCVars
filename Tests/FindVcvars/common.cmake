@@ -1,7 +1,7 @@
 find_package(Vcvars REQUIRED)
 
 execute_process(
-  COMMAND ${Vcvars_WRAPPER_BATCH_FILE} cl.exe /help
+  COMMAND ${Vcvars_LAUNCHER} cl.exe /help
   ERROR_VARIABLE cl_help
   )
 
@@ -24,9 +24,18 @@ if("${cl_version}" STREQUAL "${EXPECTED_MSVC_VERSION}")
 endif()
 
 message("Vcvars_BATCH_FILE [${Vcvars_BATCH_FILE}]")
-message("Vcvars_WRAPPER_BATCH_FILE [${Vcvars_WRAPPER_BATCH_FILE}]")
+message("Vcvars_LAUNCHER [${Vcvars_LAUNCHER}]")
 
 foreach(msvc_version IN ITEMS
+  1926
+  1925
+  1924
+  1923
+  1922
+  1921
+  1920
+  1916
+  1915
   1914
   1913
   1912

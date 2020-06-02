@@ -106,7 +106,7 @@ cmake_minimum_required(VERSION 3.5)
 set(_Vcvars_MSVC_ARCH_REGEX "^(32|64)$")
 set(_Vcvars_MSVC_VERSION_REGEX "^[0-9][0-9][0-9][0-9]$")
 set(_Vcvars_SUPPORTED_MSVC_VERSIONS 1926 1925 1924 1923 1922 1921 1920
-                                    1916 1915 1914 1913 1912 1911 1910 1900 
+                                    1916 1915 1914 1913 1912 1911 1910 1900
                                     1800 1700 1600 1500 1400)
 
 function(_vcvars_message)
